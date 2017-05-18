@@ -33,6 +33,8 @@ object CashPaymentFlow {
 
         @Suspendable
         override fun call(): SignedTransaction {
+            progressTracker.currentStep = GENERATING_ID
+            val (theirCertPath, theirCert, anonymousRecipient) = subFlow(TxKeyFlow.Requester(recipient))
             progressTracker.currentStep = GENERATING_TX
             val builder: TransactionBuilder = TransactionType.General.Builder(null)
             // TODO: Have some way of restricting this to states the caller controls
@@ -40,7 +42,7 @@ object CashPaymentFlow {
                 serviceHub.vaultService.generateSpend(
                         builder,
                         amount,
-                        recipient,
+                        anonymousRecipient,
                         issuerConstraint)
             } catch (e: InsufficientBalanceException) {
                 throw CashException("Insufficient cash for spend: ${e.message}", e)

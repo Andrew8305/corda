@@ -40,10 +40,12 @@ object CashIssueFlow {
 
         @Suspendable
         override fun call(): SignedTransaction {
+            progressTracker.currentStep = GENERATING_ID
+            val (theirCertPath, theirCert, anonymousRecipient) = subFlow(TxKeyFlow.Requester(recipient))
             progressTracker.currentStep = GENERATING_TX
             val builder: TransactionBuilder = TransactionType.General.Builder(notary = null)
             val issuer = serviceHub.myInfo.legalIdentity.ref(issueRef)
-            Cash().generateIssue(builder, amount.issuedBy(issuer), recipient, notary)
+            Cash().generateIssue(builder, amount.issuedBy(issuer), anonymousRecipient, notary)
             progressTracker.currentStep = SIGNING_TX
             val tx = serviceHub.signInitialTransaction(builder)
             progressTracker.currentStep = FINALISING_TX
