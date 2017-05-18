@@ -534,7 +534,7 @@ class ObligationTests {
                 input("Alice's $1,000,000 obligation to Bob")
                 output("Alice's defaulted $1,000,000 obligation to Bob") { (oneMillionDollars.OBLIGATION between Pair(ALICE, BOB)).copy(lifecycle = Lifecycle.DEFAULTED) }
                 command(BOB_PUBKEY) { Obligation.Commands.SetLifecycle(Lifecycle.DEFAULTED) }
-                this `fails with` "there is not a timeRange from the authority"
+                this `fails with` "there is a timeRange from the authority"
             }
         }
 

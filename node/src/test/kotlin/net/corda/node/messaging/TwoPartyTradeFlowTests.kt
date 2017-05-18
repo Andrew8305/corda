@@ -481,7 +481,7 @@ class TwoPartyTradeFlowTests {
     @Test
     fun `dependency with error on seller side`() {
         ledger {
-            runWithError(false, true, "must be time-ranged")
+            runWithError(false, true, "Issuances must have a time-range (validation window)")
         }
     }
 
